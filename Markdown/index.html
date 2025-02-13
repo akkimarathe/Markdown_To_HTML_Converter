@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <script>
+        function uploadFile() {
+            let formData = new FormData();
+            let fileInput = document.getElementById("markdownFile");
+            let file = fileInput.files[0];
+            
+            if (!file) {
+                alert("Please select a file!");
+                return;
+            }
+
+            formData.append("file", file);
+
+            fetch("http://127.0.0.1:5000/convert", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.html_file) {
+                    let downloadBtn = document.getElementById("downloadBtn");
+                    downloadBtn.href = "http://127.0.0.1:5000/download/" + data.html_file;
+                    downloadBtn.style.display = "block";  // Show the download button
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</head>
+<body>
+    <h2>Markdown to HTML Converter</h2>
+    <input type="file" id="markdownFile">
+    <button onclick="uploadFile()">Convert</button>
+    
+    <!-- Hidden Download button -->
+    <a id="downloadBtn" href="#" style="display: none; margin-top: 20px; display: block;">Download HTML</a>
+</body>
+</html>
